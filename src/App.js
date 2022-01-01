@@ -1,23 +1,36 @@
-import logo from './logo.svg';
+import { useState } from 'react';
 import './App.css';
+const {isbn10Checksum, isbn13Checksum} = require('isbn-check/src/isbn-check')
 
 function App() {
+  const [isbn, setISBN] = useState("")
+  const [isValid, setIsValid] = useState(null)
+
+  const checkISBN = () => {
+    if (isbn.length <= 10) {
+      let checksum = isbn10Checksum(isbn)
+      if(checksum == "X") {
+        setIsValid(true);
+      }
+      else if (checksum % 11 == 0) {
+        console.log("zwei " +checksum);
+        setIsValid(true)
+      } 
+      else {
+        console.log("drei " +checksum);
+        setIsValid(false)
+      }
+    } 
+    else {
+      console.log(isbn13Checksum(isbn))
+    }
+  }
+
   return (
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <input value={isbn} onChange={({target}) => setISBN(target.value)} />
+      <button onClick={() => checkISBN()}>ISBN Check</button>
+      {isValid === null ? null : isValid ? <p style={{color: 'green'}}>Ist Valide</p> : <p style={{color: 'red'}}>Ist nicht Valide.</p>}
     </div>
   );
 }
