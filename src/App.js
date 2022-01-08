@@ -47,7 +47,7 @@ function App() {
       {book && (
         <>
           <h1>{book.title}</h1>
-          <h2>{book.author ? book.author : "Autor unbekannt"}</h2>
+          <h2>{book.authors ? book.authors[0] : "Autor unbekannt"}</h2>
           <p>{book.description}</p>
           {book.imageLinks.thumbnail ? (
             <img src={book.imageLinks.thumbnail} alt="cover" />
