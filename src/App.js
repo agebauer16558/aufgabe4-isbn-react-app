@@ -8,29 +8,41 @@ function App() {
   const [book, setBook] = useState(null);
   const [isValid, setIsValid] = useState(null);
 
+  const fetchData = () => {
+    nodeIsbn
+      .provider(["openlibrary", "google"])
+      .resolve(isbn)
+      .then(function (book) {
+        console.log(book);
+        setBook(book);
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+  };
+
   const checkISBN = () => {
     if (isbn.length <= 10) {
       let checksum = isbn10Checksum(isbn);
       if (checksum === "X") {
         setIsValid(true);
+        fetchData();
       } else if (checksum % 11 === 0) {
         setIsValid(true);
-
-        nodeIsbn
-          .provider(["openlibrary", "google"])
-          .resolve(isbn)
-          .then(function (book) {
-            console.log(book);
-            setBook(book);
-          })
-          .catch(function (err) {
-            console.log(err);
-          });
+        fetchData();
       } else {
         setIsValid(false);
       }
     } else {
-      console.log(isbn13Checksum(isbn));
+      const isbn12 = isbn.substring(0, isbn.length - 1);
+      const checksum = isbn13Checksum(isbn12);
+
+      if (checksum === Number(isbn[12])) {
+        setIsValid(true);
+        fetchData();
+      } else {
+        setIsValid(false);
+      }
     }
   };
 
